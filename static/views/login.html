@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bootstrap 101 Template</title>
+  <title>登陆页</title>
 
   <!-- Bootstrap -->
   <link href="../lib/css/bootstrap.min.css" rel="stylesheet">
@@ -28,14 +28,14 @@
 </head>
 
 <body>
-  <div class="container-fluid">
+  <div class="container">
     <div class="row">
       <div class="col-md-6 col-lg-offset-3">
         <!-- 面板 -->
         <div class="panel panel-primary login-panel">
           <div class="panel-heading">登陆学生管理系统</div>
           <div class="panel-body">
-              <form class="form-horizontal">
+              <form class="form-horizontal" action="/login" method="POST">
                 <div class="form-group">
                   <label for="username" class="col-sm-2 control-label">用户名</label>
                   <div class="col-sm-10">
@@ -54,13 +54,13 @@
                     <input type="password" name="usercode" class="form-control" id="usercode" placeholder="请输入验证码">
                   </div>
                   <div class="col-sm-4">
-                    <img src="../img/code.PNG" class="codeimg" alt="">
+                    <img src="/login/captchsImg" class="codeimg" alt="">
                   </div>
                 </div> 
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-default">登陆</button>
-                    <button type="submit" class="btn btn-danger col-sm-offset-1">注册</button>
+                    <a href="/register" class="btn btn-danger col-sm-offset-1">注册</a>
                   </div>
                 </div>
               </form>
@@ -76,3 +76,10 @@
 <script src="../lib/js/jquery-1.12.4.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="../lib/js/bootstrap.min.js"></script>
+<script>
+  $(function(){
+    $(".codeimg").click(function(){
+      $(this).attr('src',$(this).attr('src')+`?${Math.random()}`);
+    })
+  })
+</script>
