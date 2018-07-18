@@ -22,6 +22,9 @@
         font-weight: 700;
         color: red;
     }
+    .hidden{
+        display: none;
+    }
     
   </style>
 </head>
@@ -47,7 +50,7 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <p class="navbar-text navbar-right">
-                        欢迎[aaa]登陆
+                        欢迎[{{username}}]登陆
                         <a href="/logout" class="navbar-link red">退出</a>
                     </p>
                 </div>
@@ -70,7 +73,8 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div class="panel panel-default">
+            <!-- 列表区域-->
+            <div class="panel panel-default list-box">
                 <div class="panel-heading">
                     <ol class="breadcrumb">
                         <li><a href="#">首页</a></li>
@@ -81,14 +85,14 @@
                 <div class="panel-heading">
                     <form class="form-inline">
                         <div class="form-group">
-                            <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+                            <label class="sr-only" for="searchbar">Amount (in dollars)</label>
                             <div class="input-group">
                             <div class="input-group-addon">学生姓名</div>
-                            <input type="text" class="form-control" id="exampleInputAmount" placeholder="请输入学生姓名进行查询">
+                            <input type="text" class="form-control" id="searchbar" placeholder="请输入学生姓名进行查询">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success">查找</button>
-                        <button type="submit" class="btn btn-success">新增</button>
+                        <button type="button" class="btn btn-success search">查找</button>
+                        <button type="button" class="btn btn-success btn-add-show">新增</button>
                     </form>
                 </div>
                 <div class="panel-body">
@@ -109,12 +113,72 @@
                                 <td>男</td>
                                 <td>18888888888</td>
                                 <td>
-                                    <a href="#" class="btn btn-success btn-sm">编辑</a>
-                                    <a href="#" class="btn btn-danger btn-sm">删除</a>
+                                    <a href="javascript:void(0)" class="btn btn-success btn-sm">编辑</a>
+                                    <a href="javascript:void(0)" class="btn btn-danger btn-sm">删除</a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <!-- 编辑新增区域 -->
+            <div class="panel panel-default add-box hidden">
+                <div class="panel-heading">
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">首页</a>
+                        </li>
+                        <li>
+                            <a href="#">学生管理</a>
+                        </li>
+                        <li class="active">新增学生</li>
+                    </ol>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">姓名</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="name" class="form-control" id="name" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="age" class="col-sm-2 control-label">年龄</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="age" class="form-control" id="age" placeholder="请输入年龄">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender" class="col-sm-2 control-label">性别</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="sex" class="form-control" id="gender" placeholder="请输入性别">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="col-sm-2 control-label">电话</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="phone" class="form-control" id="phone" placeholder="请输入电话">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="site" class="col-sm-2 control-label">地址</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="address" class="form-control" id="site" placeholder="请输入地址">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="intro" class="col-sm-2 control-label">简介</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="introduction" style="width: 550px;height: 220px" rows="3">输入简介</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="button" class="btn btn-default">保存</button>
+                                <button type="button" class="btn btn-warning">取消</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -127,3 +191,151 @@
 <script src="../lib/js/jquery-1.12.4.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="../lib/js/bootstrap.min.js"></script>
+<script>
+    $(function(){
+        //点击新增按钮,隐藏列表盒子,显示新增表单盒子
+        $(".btn-add-show").click(function(){
+            $(".list-box").addClass("hidden");
+            $(".add-box").removeClass("hidden");
+            //保存的文字变为新增
+            $(".add-box .btn-default").html("新增");
+        })
+        //点击编辑按钮,隐藏列表盒子,显示编辑表单盒子
+        $("tbody").on("click",".btn-success",function(){
+            $(".list-box").addClass("hidden");
+            $(".add-box").removeClass("hidden");
+            //新增的文字变为保存
+            $(".add-box .btn-default").html("保存");
+            //进入编辑状态
+            let id=$(this).parent().parent().data("id");
+            $.ajax({
+                url:"index/search",
+                data:{id},
+                success:function(response){
+                    // console.log(response);
+                    for (const key in response.list[0]) {
+                        $(`.add-box form [name=${key}]`).val(response.list[0][key]);
+                    }
+                    // 保存id
+                    $(".add-box form .btn-default").attr("data-id",response.list[0]._id);
+
+                }
+            })
+
+        })
+        //点击取消按钮,隐藏新增或编辑表单,显示列表
+        $(".add-box .btn-warning").click(function(){
+            $(".list-box").removeClass("hidden");
+            $(".add-box").addClass("hidden");
+        })
+
+
+        //--------------------------------------------------------
+        //新增/编辑逻辑
+        $(".add-box .btn-default").click(function(){
+            //判断是新增还是编辑
+            if($(this).html()=="新增"){
+                //走新增逻辑
+                $.ajax({
+                    url:"index/insert",
+                    data:$(".add-box form").serialize(),
+                    type:"get",
+                    success:function(response){
+                        // console.log(response);
+                        //局部刷新页面
+                        render();
+                        //显示列表页面
+                        $(".add-box .btn-warning").click();
+                    }
+                })
+            }else{
+                //走编辑逻辑
+                // 获取表单数据
+                let data=$(".add-box form").serialize();
+                //拼接id
+                data+=`&id=${$(this).data("id")}`;
+                $.ajax({
+                    url:"index/update",
+                    data:data,
+                    success:function(response){
+                        // console.log(response);
+                        //局部刷新页面
+                        render();
+                        //显示列表页面
+                        $(".add-box .btn-warning").click();
+                    }
+                })
+
+            }
+        })
+        
+        //进入渲染页面
+        render();
+
+        //搜索逻辑
+        $(".list-box .search").click(function(){
+            let searchText=$("#searchbar").val();
+            $.ajax({
+                url:"index/search",
+                data:{userName:searchText},
+                success:function(response){
+                    // console.log(response);
+                    let html;
+                    for(let i=0;i<response.list.length;i++){
+                        html+=`<tr data-id="${response.list[i]._id}">
+                                    <td>${response.list[i].name}</td>
+                                    <td>${response.list[i].age}</td>
+                                    <td>${response.list[i].sex}</td>
+                                    <td>${response.list[i].phone}</td>
+                                    <td>
+                                        <a href="javascript:void(0)" class="btn btn-success btn-sm">编辑</a>
+                                        <a href="javascript:void(0)" class="btn btn-danger btn-sm">删除</a>
+                                    </td>
+                                </tr>`
+                    }
+                    $("tbody").html(html);
+                }
+            })
+        })
+
+        //删除
+        $(".list-box tbody").on("click",".btn-danger",function(){
+            let id=$(this).parent().parent().data("id");
+            $.ajax({
+                url:"index/delete",
+                data:{id:id},
+                success:function(response){
+                    // console.log(response);
+                    render();
+                }
+            })
+        })
+
+    })
+    //渲染页面封装
+    function render(){
+        $.ajax({
+            url:"index/list",
+            // data:,
+            type:"get",
+            success:function(response){
+                // console.log(response);
+                // 渲染页面
+                let html;
+                for(let i=0;i<response.list.length;i++){
+                    html+=`<tr data-id="${response.list[i]._id}">
+                                <td>${response.list[i].name}</td>
+                                <td>${response.list[i].age}</td>
+                                <td>${response.list[i].sex}</td>
+                                <td>${response.list[i].phone}</td>
+                                <td>
+                                    <a href="javascript:void(0)" class="btn btn-success btn-sm">编辑</a>
+                                    <a href="javascript:void(0)" class="btn btn-danger btn-sm">删除</a>
+                                </td>
+                            </tr>`
+                }
+                $("tbody").html(html);
+            }
+        })
+    }
+</script>

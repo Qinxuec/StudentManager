@@ -66,3 +66,16 @@
 <script src="../lib/js/jquery-1.12.4.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="../lib/js/bootstrap.min.js"></script>
+<!-- md5加密 -->
+<script src="../lib/js/jquery.md5.js"></script>
+<script>
+  $(function(){
+    //点击注册按钮,对用户密码进行加密
+    $("button[type=submit]").click(function(e){
+      // e.preventDefault();
+      let value=$("#userpass").val();
+      let md5pass= $.md5(value, 'userpass');
+      $("#userpass").val(md5pass);
+    })
+  })
+</script>

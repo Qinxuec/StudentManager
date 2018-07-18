@@ -4,7 +4,7 @@ let path=require('path');
 let session = require('express-session');
 let bodyParser = require('body-parser');
 //导入自己的路由
-let indexRouter=require(path.join(__dirname,'route/indexRouter.js'))
+let indexRouter=require(path.join(__dirname,'route/indexRouter.js'));
 
 //链接数据库封装到了myT中,此处不需再引入
 // const MongoClient = require('mongodb').MongoClient;
@@ -16,6 +16,10 @@ let myT=require(path.join(__dirname,'tools/myT.js'));
 
 
 let app=express();
+
+ //导入模板引擎
+ app.engine('html', require('express-art-template'));
+ app.set('views','static/views');
 
 //托管静态资源
 app.use(express.static('static'));
@@ -33,7 +37,6 @@ app.use(bodyParser.urlencoded({
 }))
 
 
-
 // 去登陆页
 app.get('/login',(req,res)=>{
     res.sendFile(path.join(__dirname,'static/views/login.html'));
@@ -41,9 +44,7 @@ app.get('/login',(req,res)=>{
 //验证码
 app.get('/login/captchsImg',(req,res)=>{
     var captcha = svgCaptcha.create();
-    req.session.captcha = captcha.text;
-    // console.log(captcha.text);
-	
+    req.session.captcha = captcha.text.toLocaleLowerCase();
 	res.type('svg'); // 使用ejs等模板时如果报错 res.type('html')
 	res.status(200).send(captcha.data);
 })
@@ -65,7 +66,9 @@ app.post('/login',(req,res)=>{
     let username=req.body.username;
     let userpass=req.body.userpass;
     let usercode=req.body.usercode;
+    
     if(usercode==req.session.captcha){
+        console.log("111");
         //说明验证码正确,继续验证用户名和密码
         myT.find('userList',{username},(err,docs)=>{
             if(!err){
